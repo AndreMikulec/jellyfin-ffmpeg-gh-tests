@@ -1,0 +1,216 @@
+
+name: Jellyfin FFmpeg Shared
+run-name: Build Jellyfin FFmpeg Shared - ${{ github.event.head_commit.message }}
+
+on:
+   push:
+   pull_request:
+   workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+
+  setup:
+    runs-on: windows-2025-vs2026
+    steps:
+    - name: Pre-build check
+      id: build_check
+      shell: bash
+      run: |
+        echo "BEGIN Pre-build check"
+        set -x -v -e
+        echo "END   Pre-build check"
+
+  build:
+    name: >-
+      matid ${{ matrix.matid }}
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.GithubActionsIgnoreFail }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+
+        - matid: '01'
+          os: windows-2025-vs2026
+          platform: windows-mingw
+          compilerEnv: CLANG64
+          shellEnv: msys2 {0}
+          GithubActionsIgnoreFail: false
+          jfSRCversion: v8.1.1-4
+          buildScript: msys2/build.sh
+
+    defaults:
+      run:
+        shell: ${{ matrix.shellEnv || 'bash' }}
+
+    steps:
+
+    - name: General Shell Environment Variables made using Bash
+      run: |
+        set -x -v -e
+        echo "BEGIN General Shell Environment Variables made using Bash"
+
+        export TODAYSDATETIME=$(date -u +"%Y-%m-%d-%H-%M")
+        if [ "${TODAYSDATETIME}" == "" ]; then export TODAYSDATETIME="notset" ; fi
+        echo  "TODAYSDATETIME=${TODAYSDATETIME}" >> ${GITHUB_ENV}
+
+        echo  "TODAYSDATETIME: ${TODAYSDATETIME}"
+
+        export matid="${{ matrix.matid }}"
+        if [ "${matid}" == "" ]; then export matid="notset"; fi
+        echo "matid=${matid}" >> ${GITHUB_ENV}
+
+        echo "matid: ${matid}
+
+        export os="${{ matrix.os }}"
+        if [ "${os}" == "" ]; then export os="notset"; fi
+        echo "os=${os}" >> ${GITHUB_ENV}
+
+        echo "os: ${os}
+
+        export platform="${{ matrix.platform }}"
+        if [ "${platform}" == "" ]; then export platform="notset"; fi
+        echo "platform=${platform}" >> ${GITHUB_ENV}
+
+        echo "platform: ${platform}
+
+        export compilerEnv="${{ matrix.compilerEnv }}"
+        if [ "${compilerEnv}" == "" ]; then export compilerEnv="notset"; fi
+        echo "compilerEnv=${compilerEnv}" >> ${GITHUB_ENV}
+
+        echo "compilerEnv: ${compilerEnv}
+
+        export mingw_env="notset"
+        if [ "${compilerEnv}" == "CLANG64" ]; then export mingw_env="clang-x86_64"; fi
+        if [ "${compilerEnv}" == "notset" ];  then export mingw_env="notset"; fi
+        echo "mingw_env=${mingw_env}" >> ${GITHUB_ENV}
+
+        echo "mingw_env: ${mingw_env}"
+
+        export MINGW_PACKAGE_PREFIX="notset"
+        if [ "${mingw_env}" == "notset" ]; then export MINGW_PACKAGE_PREFIX="mingw-w64-${mingw_env}"; fi
+        excho "MINGW_PACKAGE_PREFIX=${MINGW_PACKAGE_PREFIX}" >> ${GITHUB_ENV}
+
+        echo "MINGW_PACKAGE_PREFIX: ${MINGW_PACKAGE_PREFIX}"
+
+        export shellEnv="${{ matrix.shellEnv }}"
+        if [ "${shellEnv}" == "" ]; then export shellEnv="notset"; fi
+        echo "shellEnv=${shellEnv}" >> ${GITHUB_ENV}
+
+        echo "shellEnv: ${shellEnv}
+
+        export jfSRCversion="${{ matrix.jfSRCversion }}"
+        if [ "${jfSRCversion}" == "" ]; then export jfSRCversion="notset"; fi
+        echo "jfSRCversion=${jfSRCversion}" >> ${GITHUB_ENV}
+
+        echo "jfSRCversion: ${jfSRCversion}
+
+        export buildScript="${{ matrix.buildScript }}"
+        if [ "${buildScript}" == "" ]; then export buildScript="notset"; fi
+        echo "buildScript=${buildScript}" >> ${GITHUB_ENV}
+
+        echo "buildScript: ${buildScript}
+
+        export ref_name="{{ github.ref_name }}"
+        if [ "${ref_name}" == "" ]; then export ref_name="notset"; fi
+        echo "ref_name=${ref_name}" >> ${GITHUB_ENV}
+
+        echo "ref_name: ${ref_name}
+
+        export exportFileName="${jellyfin-ffmpeg-shared-${ref_name}-${compilerEnv}-${jfSRCversion}}"
+        if [ "${exportFileName}" == "" ]; then export exportFileName="notset"; fi
+        echo "exportFileName=${exportFileName}" >> ${GITHUB_ENV}
+
+        echo "exportFileName: ${exportFileName}
+
+        echo "END   General Shell Environment Variables made using Bash"
+
+    - name: Checkout This Code
+      uses: actions/checkout@v7
+
+    - name: Checkout Jellyfin FFmpeg Code
+      uses: actions/checkout@v7
+      with:
+        repository: 'jellyfin/jellyfin-ffmpeg'
+        ref: '${{ env.jfSRCversion }}'
+        # Relative path under $GITHUB_WORKSPACE to place the repository
+        # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
+        path: JLFNFFMPEGSRC
+
+    - name: Modify buildScript
+      env:
+        msystem: ${{ env.compilerEnv }}
+      run: |
+        echo "BEGIN Modify buildScript"
+        set -x -v -e
+        cat JLFNFFMPEGSRCtailbuildScript
+        # line number of PKG_NAME
+        export PKG_NAME_LINE_NO=$(sed -n '/^PKG_NAME/=' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+        # gather the lines from the top through the line number of PKG_NAME
+        head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+        echo "head of the buildScript"
+        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+        # modify in-place - the args of the bash script 
+        sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+        # modify in place - the configure parameters of the head
+        sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+        echo "New buildScript head after adding --enabled-shared
+        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+        # backup the original
+        mv  ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }}).original
+        # reassemble the head and the buildScript - 
+        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }} JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+        echo "Final new buildscript"
+        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+        echo "END   Modify buildScript Tail"
+
+    - name: Run buildScript
+      env:
+        msystem: ${{ env.compilerEnv }}
+        EXPORT_FILE_NAME: ${{ env.exportFileName }}
+      run: |
+        echo "BEGIN Run buildScript
+        set -x -v -e
+        chmod u+x ./JLFNFFMPEGSRC/${{ env.buildScript }})
+        ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+        echo "END   Run buildScript
+
+    - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
+      uses: actions/upload-artifact@v7
+      with:
+        archive: false
+        path: ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
+
+    - name: For Distribution Release of ${{ env.exportFileName }}.zip
+      if: >-
+        ${{ github.ref_type == 'tag' }}
+      uses: ncipollo/release-action@v1
+      with:
+        body: "## Jellyfin FFmpeg Shared ${{ env.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
+        omitBodyDuringUpdate: true
+        tag: ${{ env.ref_name }}
+        allowUpdates: true
+        replacesArtifacts: true
+        artifacts: |
+          ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+#   - name: Setup for MSYS2
+#     uses: msys2/setup-msys2@v2
+#     with:
+#       update: true
+#       path-type: strict
+#       msystem: ${{ env.compilerEnv }}
+#       install: >-
+#         git
+#         curl
+#         wget
+#         zip
+#         ${{ env.MINGW_PACKAGE_PREFIX }}-toolchain
+#         quilt
+#         diffstat
+#         ${{ env.MINGW_PACKAGE_PREFIX }}-nasm

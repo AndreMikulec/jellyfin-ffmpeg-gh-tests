@@ -1,0 +1,23 @@
+
+echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
+ls -alrt -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC
+make install
+# converts the word of the variable to lowercase
+export     PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
+# BEGIN TEST
+mkdir -p ${PREFIX}/SUBDIR
+>        ${PREFIX}/prefix1.txt
+>        ${PREFIX}/SUBDIR/subdir1.txt
+# END TEST
+if [ -d "${PREFIX}" ]
+then
+  ls -alrt -R ${PREFIX}
+  mkdir -p                                                   ${GITHUB_WORKSPACE}/Export/${EXPORT_FILE_NAME}
+  #                     copy the contents
+  cp       -R ${PREFIX}/.                                    ${GITHUB_WORKSPACE}/Export/${EXPORT_FILE_NAME}
+  pushd                                                      ${GITHUB_WORKSPACE}/Export
+    zip -9 -r ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}        .
+  popd                                                # from ${GITHUB_WORKSPACE}/Export
+else
+  echo A directory called \""${PREFIX}"\" was not found.  So, skipping ...
+fi

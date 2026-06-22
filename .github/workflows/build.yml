@@ -41,7 +41,6 @@ jobs:
           compilerEnv: CLANG64
           shellEnv: msys2 {0}
           GithubActionsIgnoreFail: false
-          jfSRCversion: v8.1.1-4
           buildScript: 'msys2/build.sh'
 
     defaults:
@@ -105,12 +104,6 @@ jobs:
 
         echo "shellEnv: ${shellEnv}"
 
-        export jfSRCversion="${{ matrix.jfSRCversion }}"
-        if [ "${jfSRCversion}" == "" ]; then export jfSRCversion="notset"; fi
-        echo "jfSRCversion=${jfSRCversion}" >> ${GITHUB_ENV}
-
-        echo "jfSRCversion: ${jfSRCversion}"
-
         export buildScript="${{ matrix.buildScript }}"
         if [ "${buildScript}" == "" ]; then export buildScript="notset"; fi
         echo "buildScript=${buildScript}" >> ${GITHUB_ENV}
@@ -120,10 +113,10 @@ jobs:
         export ref_name="${{ github.ref_name }}"
         if [ "${ref_name}" == "" ]; then export ref_name="notset"; fi
         echo "ref_name=${ref_name}" >> ${GITHUB_ENV}
-
+        
         echo "ref_name: ${ref_name}"
 
-        export exportFileName="jellyfin-ffmpeg-shared-${ref_name}-${compilerEnv}-${jfSRCversion}"
+        export exportFileName="jellyfin-ffmpeg-shared-${compilerEnv}"
         if [ "${exportFileName}" == "" ]; then export exportFileName="notset"; fi
         echo "exportFileName=${exportFileName}" >> ${GITHUB_ENV}
 
@@ -139,7 +132,6 @@ jobs:
       uses: actions/checkout@v7
       with:
         repository: 'jellyfin/jellyfin-ffmpeg'
-        ref: '${{ env.jfSRCversion }}'
         # Relative path under $GITHUB_WORKSPACE to place the repository
         # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
         path: JLFNFFMPEGSRC
@@ -222,38 +214,23 @@ jobs:
         "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         echo "END   Run Modify buildScript"
 
-    - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
+    - name: For Export Upload Artifact
       uses: actions/upload-artifact@v7
       with:
         archive: false
-        path: ${{ env.exportFileName }}.zip
+        path: ${{ env.EXPORT_FILE_NAME }}.zip
  
-    - name: For Distribution Release of ${{ env.exportFileName }}.zip
+    - name: For Distribution Release
       if: >-
         ${{ github.ref_type == 'tag' }}
       uses: ncipollo/release-action@v1
       with:
-        body: "## Jellyfin FFmpeg Shared ${{ env.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
+        body: "## Shared Release ${{ env.PKG_VER }}  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
         omitBodyDuringUpdate: true
-        tag: ${{ env.ref_name }}
+        tag: ${{ env.ref_name }} 
         allowUpdates: true
         replacesArtifacts: true
         artifacts: |
-          ${{ env.exportFileName }}.zip
+          ${{ env.EXPORT_FILE_NAME }}.zip
         token: ${{ secrets.GITHUB_TOKEN }}
-#
-#   - name: Setup for MSYS2
-#     uses: msys2/setup-msys2@v2
-#     with:
-#       update: true
-#       path-type: strict
-#       msystem: ${{ env.compilerEnv }}
-#       install: >-
-#         git
-#         curl
-#         wget
-#         zip
-#         ${{ env.MINGW_PACKAGE_PREFIX }}-toolchain
-#         quilt
-#         diffstat
-#         ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
+

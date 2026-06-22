@@ -11,23 +11,30 @@ VARIANT="gpl"
 
 
 
+# make install
+
+echo "PKG_VER: ${PKG_VER}"
+if [ "${PKG_VER}" == "" ]; then PKG_VER="0.0.0"; fi
+export PKG_VER
+echo "PKG_VER=${PKG_VER}" >> ${GITHUB_ENV}
+
+echo "PKG_VER: ${PKG_VER}"
+
 echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
+export EXPORT_FILE_NAME="${EXPORT_FILE_NAME}-${PKG_VER}"
+echo "EXPORT_FILE_NAME=${EXPORT_FILE_NAME}" >> ${GITHUB_ENV}
+
+echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
+
 echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
 echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-
-# make install
 
 # converts the word of the variable to lowercase
 export      PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
 if [ ! -d "${PREFIX}" ];     then mkdir -p "${PREFIX}"; fi
 if [ ! -d "${PREFIX}/doc" ]; then mkdir -p "${PREFIX}/doc"; fi
 
-# BEGIN TEST
-mkdir -p ${PREFIX}/SUBDIR
-touch    ${PREFIX}/prefix1.txt
-touch    ${PREFIX}/SUBDIR/subdir1.txt
-# END TEST
 if [ -d "${PREFIX}" ]
 then
   ls -alrt -R ${PREFIX}
@@ -41,3 +48,4 @@ then
 else
   echo A directory called \""${PREFIX}"\" was not found.  So, exiting ... || exit 1
 fi
+

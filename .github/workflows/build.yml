@@ -181,7 +181,8 @@ jobs:
         if [ -d "JLFNFFMPEGSRC" ]
         then
           # fix later
-          export BUILDSCRIPT="msys2/build.sh"
+          # export BUILDSCRIPT="msys2/build.sh"
+          export BUILDSCRIPT=${buildScript}
           echo "BUILDSCRIPT: ${BUILDSCRIPT}"
           echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"

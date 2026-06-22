@@ -99,17 +99,17 @@ VARIANT="gpl"
 #     --enable-nvenc
 
 # make -j$(nproc) V=1
-
-# We have to manually match lines to get version as there will be no dpkg-parsechangelog on msys2
-PKG_VER=0.0.0
-while IFS= read -r line; do
-    if [[ $line == jellyfin-ffmpeg* ]]; then
-        if [[ $line =~ \(([^\)]+)\) ]]; then
-            PKG_VER="${BASH_REMATCH[1]}"
-            break
-        fi
-    fi
-done < "$BUILDER_ROOT"/../debian/changelog
+# 
+# # We have to manually match lines to get version as there will be no dpkg-parsechangelog on msys2
+# PKG_VER=0.0.0
+# while IFS= read -r line; do
+#     if [[ $line == jellyfin-ffmpeg* ]]; then
+#         if [[ $line =~ \(([^\)]+)\) ]]; then
+#             PKG_VER="${BASH_REMATCH[1]}"
+#             break
+#         fi
+#     fi
+# done < "$BUILDER_ROOT"/../debian/changelog
 
 echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
 echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"

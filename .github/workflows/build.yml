@@ -209,13 +209,10 @@ jobs:
         set -x -v -e
         export BUILDSCRIPT="${buildScript}"
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
-        echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-        export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
-        echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
         echo "END   Modify buildScript NOTHING"
 
 
-    - name: Run buildScript
+    - name: Run buildScript 2
       env:
         msystem: ${{ env.compilerEnv }}
       run: |
@@ -227,7 +224,7 @@ jobs:
         echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
-        echo "END   Run buildScript
+        echo "END   Run buildScript 2
 
 #   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
 #     uses: actions/upload-artifact@v7

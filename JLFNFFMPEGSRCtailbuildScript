@@ -4,7 +4,7 @@ echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
 echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 
-make install
+# make install
 
 # converts the word of the variable to lowercase
 export     PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"

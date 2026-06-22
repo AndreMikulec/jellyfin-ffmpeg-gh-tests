@@ -207,14 +207,11 @@ jobs:
       run: |
         echo "BEGIN Modify buildScript NOTHING"
         set -x -v -e
-        if [ true ]
-        then
-          export BUILDSCRIPT="${buildScript}"
-          echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
-          echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-          export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
-          echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-        fi
+        export BUILDSCRIPT="${buildScript}"
+        echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
+        echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+        export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
+        echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
         echo "END   Modify buildScript NOTHING"
 
 

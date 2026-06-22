@@ -12,6 +12,18 @@ permissions:
 
 jobs:
 
+  setup:
+    runs-on: windows-2025-vs2026
+    steps:
+    - name: Pre-build check
+      id: build_check
+      shell: bash
+      run: |
+        echo "BEGIN Pre-build check"
+        set -x -v -e
+        echo "Preparing environment..."
+        echo "END   Pre-build check"
+
   build:
     name: >-
       matid ${{ matrix.matid }}
@@ -36,7 +48,6 @@ jobs:
       run:
         shell: ${{ matrix.shellEnv || 'bash' }}
 
-    steps:
 
     - name: General Shell Environment Variables made using Bash
       shell: bash

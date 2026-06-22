@@ -10,6 +10,10 @@ on:
 permissions:
   contents: write
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
 
   setup:
@@ -62,7 +66,7 @@ jobs:
     steps:
 
     - name: General Shell Environment Variables made using Bash
-      shell: bash  
+      # shell: bash  
       run: |
         set -x -v -e
         echo "BEGIN General Shell Environment Variables made using Bash"
@@ -170,10 +174,14 @@ jobs:
         set -x -v -e
         if [ -d "JLFNFFMPEGSRC" ]
         then
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           ls -alrt -R JLFNFFMPEGSRC
           cat JLFNFFMPEGSRCtailbuildScript
           # line number of PKG_NAME
           export PKG_NAME_LINE_NO=$(sed -n '/^PKG_NAME/=' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+          echo "PKG_NAME_LINE_NO: ${PKG_NAME_LINE_NO}"
           # gather the lines from the top through the line number of PKG_NAME
           head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
           echo "head of the buildScript"

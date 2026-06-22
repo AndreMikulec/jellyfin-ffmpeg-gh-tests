@@ -41,7 +41,7 @@ jobs:
           shellEnv: msys2 {0}
           GithubActionsIgnoreFail: false
           jfSRCversion: v8.1.1-4
-          buildScript: 'msys2/build.sh'
+          buildScript: msys2/build.sh
 
     defaults:
       run:
@@ -109,9 +109,9 @@ jobs:
 
         echo "jfSRCversion: ${jfSRCversion}
 
-        export buildScript="${{ matrix.buildScript }}"
-        if [ "${buildScript}" == "" ]; then export buildScript="notset"; fi
-        echo "buildScript=${buildScript}" >> ${GITHUB_ENV}
+#       export buildScript="${{ matrix.buildScript }}"
+#       if [ "${buildScript}" == "" ]; then export buildScript="notset"; fi
+#       echo "buildScript=${buildScript}" >> ${GITHUB_ENV}
 
         echo "buildScript: ${buildScript}
 

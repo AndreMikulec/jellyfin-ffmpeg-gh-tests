@@ -147,25 +147,31 @@ jobs:
       run: |
         echo "BEGIN Modify buildScript"
         set -x -v -e
-        cat JLFNFFMPEGSRCtailbuildScript
-        # line number of PKG_NAME
-        export PKG_NAME_LINE_NO=$(sed -n '/^PKG_NAME/=' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
-        # gather the lines from the top through the line number of PKG_NAME
-        head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-        echo "head of the buildScript"
-        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-        # modify in-place - the args of the bash script 
-        sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-        # modify in place - the configure parameters of the head
-        sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-        echo "New buildScript head after adding --enabled-shared
-        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-        # backup the original
-        mv  ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }}).original
-        # reassemble the head and the buildScript - 
-        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }} JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
-        echo "Final new buildscript"
-        cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+        if [ -d "JLFNFFMPEGSRC" ]
+        then
+          ls -alrt -R JLFNFFMPEGSRC
+          cat JLFNFFMPEGSRCtailbuildScript
+          # line number of PKG_NAME
+          export PKG_NAME_LINE_NO=$(sed -n '/^PKG_NAME/=' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+          # gather the lines from the top through the line number of PKG_NAME
+          head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+          echo "head of the buildScript"
+          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+          # modify in-place - the args of the bash script 
+          sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+          # modify in place - the configure parameters of the head
+          sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+          echo "New buildScript head after adding --enabled-shared
+          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+          # backup the original
+          mv  ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }}).original
+          # reassemble the head and the buildScript - 
+          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }} JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+          echo "Final new buildscript"
+          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+        else
+          echo A directory called \""${JLFNFFMPEGSRC}"\" was not found.  So, exiting ... ||  exit 1
+        fi
         echo "END   Modify buildScript Tail"
 
     - name: Run buildScript

@@ -123,7 +123,7 @@ jobs:
 
         echo "ref_name: ${ref_name}"
 
-        export exportFileName="$jellyfin-ffmpeg-shared-${ref_name}-${compilerEnv}-${jfSRCversion}"
+        export exportFileName="jellyfin-ffmpeg-shared-${ref_name}-${compilerEnv}-${jfSRCversion}"
         if [ "${exportFileName}" == "" ]; then export exportFileName="notset"; fi
         echo "exportFileName=${exportFileName}" >> ${GITHUB_ENV}
 
@@ -162,7 +162,6 @@ jobs:
 
     - name: Modify buildScript
       env:
-        # BUILDSCRIPT: ${{ env.buildScript }} # can not be the same case insenstive name
         msystem: ${{ env.compilerEnv }}
       run: |
         echo "BEGIN Modify buildScript"
@@ -208,10 +207,12 @@ jobs:
       run: |
         echo "BEGIN Run buildScript
         set -x -v -e
-        export EXPORT_FILE_NAME="${exportFileName}"
-        echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
-        export BUILDSCRIPT="${buildScript}"
+        BUILDSCRIPT="${buildScript}"
+        export BUILDSCRIPT
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
+        EXPORT_FILE_NAME="${exportFileName}"
+        export EXPORT_FILE_NAME
+        echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         echo "END   Run buildScript

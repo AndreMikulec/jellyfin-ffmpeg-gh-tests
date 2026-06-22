@@ -151,14 +151,15 @@ jobs:
         path-type: strict
         msystem: ${{ env.compilerEnv }}
         install: >-
-          git
-          curl
-          wget
-          zip
-          ${{ env.MINGW_PACKAGE_PREFIX }}-toolchain
-          quilt
-          diffstat
-          ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
+          libc++
+#         git
+#         curl
+#         wget
+#         zip
+#         ${{ env.MINGW_PACKAGE_PREFIX }}-toolchain
+#         quilt
+#         diffstat
+#         ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
 
     - name: Modify buildScript
       env:
@@ -211,11 +212,12 @@ jobs:
         echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         export BUILDSCRIPT="${buildScript}"
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
-        # next two lines are only for testing
-        mv "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
-        mv "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
-        chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
-        "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # next three lines are only for testing
+        mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
+        mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        cat "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         echo "END   Run Modify buildScript"
 
 #   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip

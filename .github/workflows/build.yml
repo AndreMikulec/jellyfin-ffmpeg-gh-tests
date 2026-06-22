@@ -26,12 +26,12 @@ jobs:
         export IS_SKIPTAG="notset"
         export IS_SKIPTAG="${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'SKIP') && 'true' || 'false' }}"
         if [ "${IS_SKIPTAG}" == "" ]; then export IS_SKIPTAG="notset" ; fi
-        echo  "IS_SKIPTAG=${IS_SKIPTAG}" >> ${GITHUB_OUTPUT} 
+        echo  "IS_SKIPTAG=${IS_SKIPTAG}" >> ${GITHUB_OUTPUT}
 
-        echo  "IS_SKIPTAG: ${IS_SKIPTAG}" 
+        echo  "IS_SKIPTAG: ${IS_SKIPTAG}"
 
         echo "END   Pre-build check"
-    
+
     outputs:
       IS_SKIPTAG: ${{ steps.build_check.outputs.IS_SKIPTAG }}
 
@@ -66,86 +66,86 @@ jobs:
       run: |
         set -x -v -e
         echo "BEGIN General Shell Environment Variables made using Bash"
- 
+
         export TODAYSDATETIME=$(date -u +"%Y-%m-%d-%H-%M")
         if [ "${TODAYSDATETIME}" == "" ]; then export TODAYSDATETIME="notset" ; fi
         echo  "TODAYSDATETIME=${TODAYSDATETIME}" >> ${GITHUB_ENV}
- 
+
         echo  "TODAYSDATETIME: ${TODAYSDATETIME}"
- 
+
         export matid="${{ matrix.matid }}"
         if [ "${matid}" == "" ]; then export matid="notset"; fi
         echo "matid=${matid}" >> ${GITHUB_ENV}
- 
+
         echo "matid: ${matid}"
- 
+
         export os="${{ matrix.os }}"
         if [ "${os}" == "" ]; then export os="notset"; fi
         echo "os=${os}" >> ${GITHUB_ENV}
- 
+
         echo "os: ${os}"
- 
+
         export platform="${{ matrix.platform }}"
         if [ "${platform}" == "" ]; then export platform="notset"; fi
         echo "platform=${platform}" >> ${GITHUB_ENV}
- 
+
         echo "platform: ${platform}"
- 
+
         export compilerEnv="${{ matrix.compilerEnv }}"
         if [ "${compilerEnv}" == "" ]; then export compilerEnv="notset"; fi
         echo "compilerEnv=${compilerEnv}" >> ${GITHUB_ENV}
- 
+
         echo "compilerEnv: ${compilerEnv}"
- 
+
         export mingw_env="notset"
         if [ "${compilerEnv}" == "CLANG64" ]; then export mingw_env="clang-x86_64"; fi
         if [ "${compilerEnv}" == "notset" ];  then export mingw_env="notset"; fi
         echo "mingw_env=${mingw_env}" >> ${GITHUB_ENV}
- 
+
         echo "mingw_env: ${mingw_env}"
- 
+
         export MINGW_PACKAGE_PREFIX="notset"
         if [ "${mingw_env}" != "notset" ]; then export MINGW_PACKAGE_PREFIX="mingw-w64-${mingw_env}"; fi
         echo "MINGW_PACKAGE_PREFIX=${MINGW_PACKAGE_PREFIX}" >> ${GITHUB_ENV}
- 
+
         echo "MINGW_PACKAGE_PREFIX: ${MINGW_PACKAGE_PREFIX}"
- 
+
         export shellEnv="${{ matrix.shellEnv }}"
         if [ "${shellEnv}" == "" ]; then export shellEnv="notset"; fi
         echo "shellEnv=${shellEnv}" >> ${GITHUB_ENV}
- 
+
         echo "shellEnv: ${shellEnv}"
- 
+
         export jfSRCversion="${{ matrix.jfSRCversion }}"
         if [ "${jfSRCversion}" == "" ]; then export jfSRCversion="notset"; fi
         echo "jfSRCversion=${jfSRCversion}" >> ${GITHUB_ENV}
- 
+
         echo "jfSRCversion: ${jfSRCversion}"
- 
+
         export buildScript="${{ matrix.buildScript }}"
         if [ "${buildScript}" == "" ]; then export buildScript="notset"; fi
         echo "buildScript=${buildScript}" >> ${GITHUB_ENV}
- 
+
         echo "buildScript: ${buildScript}"
- 
+
         export ref_name="{{ github.ref_name }}"
         if [ "${ref_name}" == "" ]; then export ref_name="notset"; fi
         echo "ref_name=${ref_name}" >> ${GITHUB_ENV}
- 
+
         echo "ref_name: ${ref_name}"
- 
+
         export exportFileName="${jellyfin-ffmpeg-shared-${ref_name}-${compilerEnv}-${jfSRCversion}}"
         if [ "${exportFileName}" == "" ]; then export exportFileName="notset"; fi
         echo "exportFileName=${exportFileName}" >> ${GITHUB_ENV}
- 
+
         echo "exportFileName: ${exportFileName}"
- 
+
         echo "END   General Shell Environment Variables made using Bash"
 
- 
+
     - name: Checkout This Code
       uses: actions/checkout@v7
- 
+
     - name: Checkout Jellyfin FFmpeg Code
       uses: actions/checkout@v7
       with:
@@ -193,20 +193,20 @@ jobs:
           head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           echo "head of the buildScript"
           cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
-          # modify in-place - the args of the bash script
-          sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
-          # modify in place - the configure parameters of the head
-          sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
-          echo "New buildScript head after adding --enabled-shared
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${BUILDSCRIPT}
-          # rename the original
-          pushd $(dirname ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT})
-            mv ../${BUILDSCRIPT} ../${BUILDSCRIPT}.original
-          popd
-          # reassemble the head and the tail
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
-          echo "Final new buildscript"
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
+#         # modify in-place - the args of the bash script
+#         sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+#         # modify in place - the configure parameters of the head
+#         sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+#         echo "New buildScript head after adding --enabled-shared"
+#         cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+#         # rename the original
+#         pushd $(dirname ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT})
+#           mv ../${BUILDSCRIPT} ../${BUILDSCRIPT}.original
+#         popd
+#         # reassemble the head and the tail
+#         cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
+#         echo "Final new buildscript"
+#         cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         else
           echo A directory called \""${JLFNFFMPEGSRC}"\" was not found.  So, exiting ... ||  exit 1
         fi

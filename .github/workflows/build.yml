@@ -54,11 +54,11 @@ jobs:
         set -x -v -e
         echo "BEGIN General Shell Environment Variables made using Bash"
  
-        export TODAYSDATETIME=$(date -u +"%Y-%m-%d-%H-%M")
-        if [ "${TODAYSDATETIME}" == "" ]; then export TODAYSDATETIME="notset" ; fi
-        echo  "TODAYSDATETIME=${TODAYSDATETIME}" >> ${GITHUB_ENV}
- 
-        echo  "TODAYSDATETIME: ${TODAYSDATETIME}"
+#       export TODAYSDATETIME=$(date -u +"%Y-%m-%d-%H-%M")
+#       if [ "${TODAYSDATETIME}" == "" ]; then export TODAYSDATETIME="notset" ; fi
+#       echo  "TODAYSDATETIME=${TODAYSDATETIME}" >> ${GITHUB_ENV}
+#
+#       echo  "TODAYSDATETIME: ${TODAYSDATETIME}"
 #
 #       export matid="${{ matrix.matid }}"
 #       if [ "${matid}" == "" ]; then export matid="notset"; fi
@@ -129,91 +129,89 @@ jobs:
 #
 #       echo "END   General Shell Environment Variables made using Bash"
 
-    - name: Setup for MSYS2
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        path-type: strict
-        msystem: CLANG64
-
-    - name: Checkout This Code
-      uses: actions/checkout@v7
-
-    - name: Checkout Jellyfin FFmpeg Code
-      uses: actions/checkout@v7
-      with:
-        repository: 'jellyfin/jellyfin-ffmpeg'
-        ref: '${{ env.jfSRCversion }}'
-        # Relative path under $GITHUB_WORKSPACE to place the repository
-        # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
-        path: JLFNFFMPEGSRC
-
-
-
-    - name: Modify buildScript
-      env:
-        msystem: ${{ env.compilerEnv }}
-      run: |
-        echo "BEGIN Modify buildScript"
-        set -x -v -e
-        if [ -d "JLFNFFMPEGSRC" ]
-        then
-          ls -alrt -R JLFNFFMPEGSRC
-          cat JLFNFFMPEGSRCtailbuildScript
-          # line number of PKG_NAME
-          export PKG_NAME_LINE_NO=$(sed -n '/^PKG_NAME/=' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
-          # gather the lines from the top through the line number of PKG_NAME
-          head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-          echo "head of the buildScript"
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-          # modify in-place - the args of the bash script
-          sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-          # modify in place - the configure parameters of the head
-          sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-          echo "New buildScript head after adding --enabled-shared
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
-          # backup the original
-          mv  ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }}).original
-          # reassemble the head and the buildScript -
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }} JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
-          echo "Final new buildscript"
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
-        else
-          echo A directory called \""${JLFNFFMPEGSRC}"\" was not found.  So, exiting ... ||  exit 1
-        fi
-        echo "END   Modify buildScript Tail"
-
-    - name: Run buildScript
-      env:
-        msystem: ${{ env.compilerEnv }}
-        EXPORT_FILE_NAME: ${{ env.exportFileName }}
-      run: |
-        echo "BEGIN Run buildScript
-        set -x -v -e
-        chmod u+x ./JLFNFFMPEGSRC/${{ env.buildScript }})
-        ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
-        echo "END   Run buildScript
-
-    - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
-      uses: actions/upload-artifact@v7
-      with:
-        archive: false
-        path: ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
-
-    - name: For Distribution Release of ${{ env.exportFileName }}.zip
-      if: >-
-        ${{ github.ref_type == 'tag' }}
-      uses: ncipollo/release-action@v1
-      with:
-        body: "## Jellyfin FFmpeg Shared ${{ env.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
-        omitBodyDuringUpdate: true
-        tag: ${{ env.ref_name }}
-        allowUpdates: true
-        replacesArtifacts: true
-        artifacts: |
-          ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
-        token: ${{ secrets.GITHUB_TOKEN }}
-
+#   - name: Setup for MSYS2
+#     uses: msys2/setup-msys2@v2
+#     with:
+#       update: true
+#       path-type: strict
+#       msystem: CLANG64
+#
+#   - name: Checkout This Code
+#     uses: actions/checkout@v7
+#
+#   - name: Checkout Jellyfin FFmpeg Code
+#     uses: actions/checkout@v7
+#     with:
+#       repository: 'jellyfin/jellyfin-ffmpeg'
+#       ref: '${{ env.jfSRCversion }}'
+#       # Relative path under $GITHUB_WORKSPACE to place the repository
+#       # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
+#       path: JLFNFFMPEGSRC
+#
+#   - name: Modify buildScript
+#     env:
+#       msystem: ${{ env.compilerEnv }}
+#     run: |
+#       echo "BEGIN Modify buildScript"
+#       set -x -v -e
+#       if [ -d "JLFNFFMPEGSRC" ]
+#       then
+#         ls -alrt -R JLFNFFMPEGSRC
+#         cat JLFNFFMPEGSRCtailbuildScript
+#         # line number of PKG_NAME
+#         export PKG_NAME_LINE_NO=$(sed -n '/^PKG_NAME/=' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+#         # gather the lines from the top through the line number of PKG_NAME
+#         head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+#         echo "head of the buildScript"
+#         cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+#         # modify in-place - the args of the bash script
+#         sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+#         # modify in place - the configure parameters of the head
+#         sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+#         echo "New buildScript head after adding --enabled-shared
+#         cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }})
+#         # backup the original
+#         mv  ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }} ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }}).original
+#         # reassemble the head and the buildScript -
+#         cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/head${{ env.buildScript }} JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+#         echo "Final new buildscript"
+#         cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+#       else
+#         echo A directory called \""${JLFNFFMPEGSRC}"\" was not found.  So, exiting ... ||  exit 1
+#       fi
+#       echo "END   Modify buildScript Tail"
+#
+#   - name: Run buildScript
+#     env:
+#       msystem: ${{ env.compilerEnv }}
+#       EXPORT_FILE_NAME: ${{ env.exportFileName }}
+#     run: |
+#       echo "BEGIN Run buildScript
+#       set -x -v -e
+#       chmod u+x ./JLFNFFMPEGSRC/${{ env.buildScript }})
+#       ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${{ env.buildScript }})
+#       echo "END   Run buildScript
+#
+#   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
+#     uses: actions/upload-artifact@v7
+#     with:
+#       archive: false
+#       path: ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
+#
+#   - name: For Distribution Release of ${{ env.exportFileName }}.zip
+#     if: >-
+#       ${{ github.ref_type == 'tag' }}
+#     uses: ncipollo/release-action@v1
+#     with:
+#       body: "## Jellyfin FFmpeg Shared ${{ env.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
+#       omitBodyDuringUpdate: true
+#       tag: ${{ env.ref_name }}
+#       allowUpdates: true
+#       replacesArtifacts: true
+#       artifacts: |
+#         ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
+#       token: ${{ secrets.GITHUB_TOKEN }}
+#
 #   - name: Setup for MSYS2
 #     uses: msys2/setup-msys2@v2
 #     with:

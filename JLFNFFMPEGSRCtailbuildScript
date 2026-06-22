@@ -7,12 +7,10 @@ echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 # make install
 
 # converts the word of the variable to lowercase
-export     PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
-# BEGIN TEST
-mkdir -p ${PREFIX}/SUBDIR
-touch    ${PREFIX}/prefix1.txt
-touch    ${PREFIX}/SUBDIR/subdir1.txt
-# END TEST
+export      PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
+if [ ! -d "${PREFIX}" ];     then mkdir -p "${PREFIX}"; fi
+if [ ! -d "${PREFIX}/doc" ]; then mkdir -p "${PREFIX}/doc"; fi
+
 if [ -d "${PREFIX}" ]
 then
   ls -alrt -R ${PREFIX}
@@ -20,7 +18,8 @@ then
   #                     copy the contents
   cp       -R ${PREFIX}/.                                    ${GITHUB_WORKSPACE}/Export/${EXPORT_FILE_NAME}
   pushd                                                      ${GITHUB_WORKSPACE}/Export
-    zip -9 -r ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}        .
+    zip -9 -r ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}.zip    .
+    ls -alrt  ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}.zip
   popd                                                # from ${GITHUB_WORKSPACE}/Export
 else
   echo A directory called \""${PREFIX}"\" was not found.  So, exiting ... || exit 1

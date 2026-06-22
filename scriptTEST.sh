@@ -35,7 +35,7 @@ then
   #                     copy the contents
   cp       -R ${PREFIX}/.                                    ${GITHUB_WORKSPACE}/Export/${EXPORT_FILE_NAME}
   pushd                                                      ${GITHUB_WORKSPACE}/Export
-    zip -9 -r ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}        .
+    zip -9 -r ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}.zip    .
     ls -alrt  ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}.zip
   popd                                                # from ${GITHUB_WORKSPACE}/Export
 else

@@ -226,7 +226,7 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         archive: false
-        path: ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
+        path: ${{ env.exportFileName }}.zip
  
 #   - name: For Distribution Release of ${{ env.exportFileName }}.zip
 #     if: >-

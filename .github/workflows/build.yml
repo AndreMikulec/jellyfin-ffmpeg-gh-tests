@@ -212,6 +212,9 @@ jobs:
         echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         export BUILDSCRIPT="${buildScript}"
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
+        echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+        export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
+        echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
         # next three lines are only for testing
         mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
         mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"

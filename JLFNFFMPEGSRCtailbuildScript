@@ -1,7 +1,11 @@
 
 echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
-ls -alrt -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC
+echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
+echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+
 make install
+
 # converts the word of the variable to lowercase
 export     PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
 # BEGIN TEST
@@ -19,5 +23,5 @@ then
     zip -9 -r ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}        .
   popd                                                # from ${GITHUB_WORKSPACE}/Export
 else
-  echo A directory called \""${PREFIX}"\" was not found.  So, skipping ...
+  echo A directory called \""${PREFIX}"\" was not found.  So, exiting ... || exit 1
 fi

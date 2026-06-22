@@ -53,7 +53,7 @@ jobs:
           shellEnv: msys2 {0}
           GithubActionsIgnoreFail: false
           jfSRCversion: v8.1.1-4
-          buildScript: msys2/build.sh
+          buildScript: 'msys2/build.sh'
 
     defaults:
       run:
@@ -180,6 +180,8 @@ jobs:
         set -x -v -e
         if [ -d "JLFNFFMPEGSRC" ]
         then
+          # fix later
+          export BUILDSCRIPT="msys2/build.sh"
           echo "BUILDSCRIPT: ${BUILDSCRIPT}"
           echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"

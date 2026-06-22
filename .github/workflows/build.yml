@@ -222,12 +222,12 @@ jobs:
         "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         echo "END   Run Modify buildScript"
 
-#   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
-#     uses: actions/upload-artifact@v7
-#     with:
-#       archive: false
-#       path: ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
-#
+    - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
+      uses: actions/upload-artifact@v7
+      with:
+        archive: false
+        path: ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
+ 
 #   - name: For Distribution Release of ${{ env.exportFileName }}.zip
 #     if: >-
 #       ${{ github.ref_type == 'tag' }}

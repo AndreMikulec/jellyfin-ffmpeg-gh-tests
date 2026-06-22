@@ -219,8 +219,8 @@ jobs:
         mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
         mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         cat "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
-        # chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
-        # "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         echo "END   Run Modify buildScript"
 
 #   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip

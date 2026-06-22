@@ -10,10 +10,6 @@ on:
 permissions:
   contents: write
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
 
   setup:
@@ -66,7 +62,7 @@ jobs:
     steps:
 
     - name: General Shell Environment Variables made using Bash
-      # shell: bash  
+      shell: bash
       run: |
         set -x -v -e
         echo "BEGIN General Shell Environment Variables made using Bash"

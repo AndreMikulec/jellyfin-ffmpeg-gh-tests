@@ -201,32 +201,18 @@ jobs:
         fi
         echo "END   Modify buildScript"
 
-    - name: Modify buildScript NOTHING
+    - name: Run buildScript
       env:
         msystem: ${{ env.compilerEnv }}
       run: |
-        echo "BEGIN Modify buildScript NOTHING"
+        echo "BEGIN Run buildScript"
         set -x -v -e
         export BUILDSCRIPT="${buildScript}"
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
         export EXPORT_FILE_NAME="${exportFileName}
-        echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
-        echo "END   Modify buildScript NOTHING"
-
-
-    - name: Run buildScript 2
-      env:
-        msystem: ${{ env.compilerEnv }}
-      run: |
-        echo "BEGIN Run buildScript
-        set -x -v -e
-        export BUILDSCRIPT="${buildScript}"
-        echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
-        export EXPORT_FILE_NAME="${exportFileName}"
         echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
-        ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
-        echo "END   Run buildScript 2
+        echo "END   Run Modify buildScript"
 
 #   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
 #     uses: actions/upload-artifact@v7

@@ -9,37 +9,37 @@ arch="x86_64"
 TARGET="win64-clang"
 VARIANT="gpl"
 
-# Copy libc++ & libunwind to our prefix folder
-mkdir -p /clang64/ffbuild/lib
-cp /clang64/lib/libc++.a /clang64/ffbuild/lib/libc++.a
-cp /clang64/lib/libunwind.a /clang64/ffbuild/lib/libunwind.a
-
-cd "$BUILDER_ROOT"/PKGBUILD
-for pkg in *; do
-    if [ -d "$pkg" ]; then
-        echo "Installing $pkg"
-        cd "$pkg"
-
-        (MINGW_ARCH=clang64 makepkg-mingw -sLfi --noconfirm --skippgpcheck) || exit $?
-
-        cd ..
-      fi
-done
-
-cd "$BUILDER_ROOT"
-cd ..
-if [[ -f "debian/patches/series" ]]; then
-    ln -s debian/patches patches
-    quilt push -a
-fi
-
-# On Windows, included headers are usually case-insensitive:
-# ffmpeg's VERSION and libc++'s "#include <version>"
-if [[ -f "VERSION" && -f "ffbuild/version.sh" ]]; then
-    mv VERSION{,.bak}
-    sed -i "s/cat VERSION/&.bak/g" ffbuild/version.sh
-fi
-
+# # Copy libc++ & libunwind to our prefix folder
+# mkdir -p /clang64/ffbuild/lib
+# cp /clang64/lib/libc++.a /clang64/ffbuild/lib/libc++.a
+# cp /clang64/lib/libunwind.a /clang64/ffbuild/lib/libunwind.a
+# 
+# cd "$BUILDER_ROOT"/PKGBUILD
+# for pkg in *; do
+#     if [ -d "$pkg" ]; then
+#         echo "Installing $pkg"
+#         cd "$pkg"
+# 
+#         (MINGW_ARCH=clang64 makepkg-mingw -sLfi --noconfirm --skippgpcheck) || exit $?
+# 
+#         cd ..
+#       fi
+# done
+# 
+# cd "$BUILDER_ROOT"
+# cd ..
+# if [[ -f "debian/patches/series" ]]; then
+#     ln -s debian/patches patches
+#     quilt push -a
+# fi
+# 
+# # On Windows, included headers are usually case-insensitive:
+# # ffmpeg's VERSION and libc++'s "#include <version>"
+# if [[ -f "VERSION" && -f "ffbuild/version.sh" ]]; then
+#     mv VERSION{,.bak}
+#     sed -i "s/cat VERSION/&.bak/g" ffbuild/version.sh
+# fi
+#
 # PKG_CONFIG_PATH=/clang64/ffbuild/lib/pkgconfig ./configure \
 #     --cc=clang \
 #     --cxx=clang++ \
@@ -111,8 +111,6 @@ while IFS= read -r line; do
     fi
 done < "$BUILDER_ROOT"/../debian/changelog
 
-if [ ! -d "/clang64/ffbuild/jellyfin-ffmpeg" ]; then mkdir -p "/clang64/ffbuild/jellyfin-ffmpeg"; fi
-
 echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
 echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
@@ -121,7 +119,10 @@ echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 # make install
 
 # converts the word of the variable to lowercase
-export     PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
+export      PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
+if [ ! -d "${PREFIX}" ];     then mkdir -p "${PREFIX}"; fi
+if [ ! -d "${PREFIX}/doc" ]; then mkdir -p "${PREFIX}/doc"; fi
+
 # BEGIN TEST
 mkdir -p ${PREFIX}/SUBDIR
 touch    ${PREFIX}/prefix1.txt

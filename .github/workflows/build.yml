@@ -151,7 +151,6 @@ jobs:
         path-type: strict
         msystem: ${{ env.compilerEnv }}
         install: >-
-          ${{ env.MINGW_PACKAGE_PREFIX }}-libc++
 #         git
 #         curl
 #         wget

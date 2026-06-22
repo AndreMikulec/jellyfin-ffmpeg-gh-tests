@@ -207,11 +207,12 @@ jobs:
       run: |
         echo "BEGIN Run buildScript"
         set -x -v -e
-        export BUILDSCRIPT="${buildScript}"
-        echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
         export EXPORT_FILE_NAME="${exportFileName}
         echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
-        chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
+        export BUILDSCRIPT="${buildScript}"
+        echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
+        # chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         echo "END   Run Modify buildScript"
 
 #   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip

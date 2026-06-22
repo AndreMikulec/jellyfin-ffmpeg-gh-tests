@@ -207,14 +207,9 @@ jobs:
       run: |
         echo "BEGIN Run buildScript
         set -x -v -e
-        # fix these later
-        BUILDSCRIPT="${buildScript}"
-        BUILDSCRIPT="msys2/build.sh"
-        export BUILDSCRIPT
+        export BUILDSCRIPT="${buildScript}"
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
-        EXPORT_FILE_NAME="${exportFileName}"
-        EXPORT_FILE_NAME="jellyfin-ffmpeg-shared-master-CLANG64-v8.1.1-4"
-        export EXPORT_FILE_NAME
+        export EXPORT_FILE_NAME="${exportFileName}"
         echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}

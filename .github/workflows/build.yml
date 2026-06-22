@@ -1,5 +1,4 @@
 
-
 name: Jellyfin FFmpeg Shared
 run-name: Build Jellyfin FFmpeg Shared - ${{ github.event.head_commit.message }}
 
@@ -23,10 +22,20 @@ jobs:
         echo "BEGIN Pre-build check"
         set -x -v -e
         echo "Preparing environment..."
+
+        export IS_SKIPTAG="notset"
+        export IS_SKIPTAG="${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'SKIP') && 'true' || 'false' }}"
+        if [ "${IS_SKIPTAG}" == "" ]; then export IS_SKIPTAG="notset" ; fi
+        echo  "IS_SKIPTAG=${IS_SKIPTAG}" >> ${GITHUB_OUTPUT}
+
+        echo  "IS_SKIPTAG: ${IS_SKIPTAG}"
+
         echo "END   Pre-build check"
 
-  build:
+    outputs:
+      IS_SKIPTAG: ${{ steps.build_check.outputs.IS_SKIPTAG }}
 
+  build:
     name: >-
       matid ${{ matrix.matid }}
     needs: setup
@@ -50,6 +59,7 @@ jobs:
       run:
         shell: ${{ matrix.shellEnv || 'bash' }}
 
+    steps:
 
     - name: General Shell Environment Variables made using Bash
       shell: bash
@@ -163,6 +173,7 @@ jobs:
 
     - name: Modify buildScript
       env:
+        # BUILDSCRIPT: ${{ env.buildScript }} # can not be the same case insenstive name
         msystem: ${{ env.compilerEnv }}
       run: |
         echo "BEGIN Modify buildScript"
@@ -201,21 +212,21 @@ jobs:
           echo A directory called \""${JLFNFFMPEGSRC}"\" was not found.  So, exiting ... ||  exit 1
         fi
         echo "END   Modify buildScript"
-
+ 
     - name: Run buildScript
       env:
         msystem: ${{ env.compilerEnv }}
       run: |
         echo "BEGIN Run buildScript
         set -x -v -e
-        export BUILDSCRIPT="${buildScript}"
-        echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
         export EXPORT_FILE_NAME="${exportFileName}"
         echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
+        export BUILDSCRIPT="${buildScript}"
+        echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
         chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         echo "END   Run buildScript
-
+ 
 #   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
 #     uses: actions/upload-artifact@v7
 #     with:

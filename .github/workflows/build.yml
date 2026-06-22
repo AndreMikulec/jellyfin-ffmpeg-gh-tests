@@ -134,7 +134,7 @@ jobs:
 
         echo "ref_name: ${ref_name}"
 
-        export exportFileName="${jellyfin-ffmpeg-shared-${ref_name}-${compilerEnv}-${jfSRCversion}}"
+        export exportFileName="$jellyfin-ffmpeg-shared-${ref_name}-${compilerEnv}-${jfSRCversion}"
         if [ "${exportFileName}" == "" ]; then export exportFileName="notset"; fi
         echo "exportFileName=${exportFileName}" >> ${GITHUB_ENV}
 
@@ -182,10 +182,10 @@ jobs:
         then
           # fix later
           export BUILDSCRIPT=${buildScript}
-          echo "BUILDSCRIPT: ${BUILDSCRIPT}"
-          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
+          echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
-          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+          echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           ls -alrt JLFNFFMPEGSRC
           cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCtailbuildScript
           # number of the line that starts with PKG_NAME
@@ -217,10 +217,13 @@ jobs:
     - name: Run buildScript
       env:
         msystem: ${{ env.compilerEnv }}
-        EXPORT_FILE_NAME: ${{ env.exportFileName }}
       run: |
         echo "BEGIN Run buildScript
         set -x -v -e
+        export EXPORT_FILE_NAME="${exportFileName}"
+        echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
+        export BUILDSCRIPT=${buildScript}
+        echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
         chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         echo "END   Run buildScript

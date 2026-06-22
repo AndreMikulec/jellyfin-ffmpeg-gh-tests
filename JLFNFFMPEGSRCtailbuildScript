@@ -10,8 +10,8 @@ make install
 export     PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
 # BEGIN TEST
 mkdir -p ${PREFIX}/SUBDIR
->        ${PREFIX}/prefix1.txt
->        ${PREFIX}/SUBDIR/subdir1.txt
+touch    ${PREFIX}/prefix1.txt
+touch    ${PREFIX}/SUBDIR/subdir1.txt
 # END TEST
 if [ -d "${PREFIX}" ]
 then

@@ -36,6 +36,7 @@ then
   cp       -R ${PREFIX}/.                                    ${GITHUB_WORKSPACE}/Export/${EXPORT_FILE_NAME}
   pushd                                                      ${GITHUB_WORKSPACE}/Export
     zip -9 -r ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}        .
+    ls -alrt  ${GITHUB_WORKSPACE}/${EXPORT_FILE_NAME}.zip
   popd                                                # from ${GITHUB_WORKSPACE}/Export
 else
   echo A directory called \""${PREFIX}"\" was not found.  So, exiting ... || exit 1

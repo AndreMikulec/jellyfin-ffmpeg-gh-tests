@@ -49,16 +49,16 @@ jobs:
 
     steps:
 
-#   - name: General Shell Environment Variables made using Bash
-#     run: |
-#       set -x -v -e
-#       echo "BEGIN General Shell Environment Variables made using Bash"
-#
-#       export TODAYSDATETIME=$(date -u +"%Y-%m-%d-%H-%M")
-#       if [ "${TODAYSDATETIME}" == "" ]; then export TODAYSDATETIME="notset" ; fi
-#       echo  "TODAYSDATETIME=${TODAYSDATETIME}" >> ${GITHUB_ENV}
-#
-#       echo  "TODAYSDATETIME: ${TODAYSDATETIME}"
+    - name: General Shell Environment Variables made using Bash
+      run: |
+        set -x -v -e
+        echo "BEGIN General Shell Environment Variables made using Bash"
+ 
+        export TODAYSDATETIME=$(date -u +"%Y-%m-%d-%H-%M")
+        if [ "${TODAYSDATETIME}" == "" ]; then export TODAYSDATETIME="notset" ; fi
+        echo  "TODAYSDATETIME=${TODAYSDATETIME}" >> ${GITHUB_ENV}
+ 
+        echo  "TODAYSDATETIME: ${TODAYSDATETIME}"
 #
 #       export matid="${{ matrix.matid }}"
 #       if [ "${matid}" == "" ]; then export matid="notset"; fi

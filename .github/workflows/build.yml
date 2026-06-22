@@ -228,19 +228,19 @@ jobs:
         archive: false
         path: ${{ env.exportFileName }}.zip
  
-#   - name: For Distribution Release of ${{ env.exportFileName }}.zip
-#     if: >-
-#       ${{ github.ref_type == 'tag' }}
-#     uses: ncipollo/release-action@v1
-#     with:
-#       body: "## Jellyfin FFmpeg Shared ${{ env.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
-#       omitBodyDuringUpdate: true
-#       tag: ${{ env.ref_name }}
-#       allowUpdates: true
-#       replacesArtifacts: true
-#       artifacts: |
-#         ${GITHUB_WORKSPACE}/${{ env.exportFileName }}.zip
-#       token: ${{ secrets.GITHUB_TOKEN }}
+    - name: For Distribution Release of ${{ env.exportFileName }}.zip
+      if: >-
+        ${{ github.ref_type == 'tag' }}
+      uses: ncipollo/release-action@v1
+      with:
+        body: "## Jellyfin FFmpeg Shared ${{ env.ref_name }} Release  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
+        omitBodyDuringUpdate: true
+        tag: ${{ env.ref_name }}
+        allowUpdates: true
+        replacesArtifacts: true
+        artifacts: |
+          ${{ env.exportFileName }}.zip
+        token: ${{ secrets.GITHUB_TOKEN }}
 #
 #   - name: Setup for MSYS2
 #     uses: msys2/setup-msys2@v2

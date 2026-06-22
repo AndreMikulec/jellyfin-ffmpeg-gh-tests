@@ -129,6 +129,13 @@ jobs:
  
         echo "END   General Shell Environment Variables made using Bash"
 
+    - name: Setup for MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        path-type: strict
+        msystem: ${{ env.compilerEnv }}
+
     - name: Checkout This Code
       uses: actions/checkout@v7
 
@@ -141,12 +148,7 @@ jobs:
         # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
         path: JLFNFFMPEGSRC
 
-    - name: Setup for MSYS2
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        path-type: strict
-        msystem: ${{ env.compilerEnv }}
+
 
     - name: Modify buildScript
       env:

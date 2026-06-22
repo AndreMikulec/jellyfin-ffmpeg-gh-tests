@@ -209,6 +209,8 @@ jobs:
         set -x -v -e
         export BUILDSCRIPT="${buildScript}"
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
+        export EXPORT_FILE_NAME="${exportFileName}
+        echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         echo "END   Modify buildScript NOTHING"
 
 

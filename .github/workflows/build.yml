@@ -12,16 +12,16 @@ permissions:
 
 jobs:
 
-  setup:
-    runs-on: windows-2025-vs2026
-    steps:
-    - name: Pre-build check
-      id: build_check
-      shell: bash
-      run: |
-        echo "BEGIN Pre-build check"
-        set -x -v -e
-        echo "END   Pre-build check"
+# setup:
+#   runs-on: windows-2025-vs2026
+#   steps:
+#   - name: Pre-build check
+#     id: build_check
+#     shell: bash
+#     run: |
+#       echo "BEGIN Pre-build check"
+#       set -x -v -e
+#       echo "END   Pre-build check"
 
   build:
     name: >-

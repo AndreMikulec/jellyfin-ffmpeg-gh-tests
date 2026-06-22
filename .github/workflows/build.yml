@@ -213,18 +213,18 @@ jobs:
           echo A directory called \""${JLFNFFMPEGSRC}"\" was not found.  So, exiting ... ||  exit 1
         fi
         echo "END   Modify buildScript"
-#
-#   - name: Run buildScript
-#     env:
-#       msystem: ${{ env.compilerEnv }}
-#       EXPORT_FILE_NAME: ${{ env.exportFileName }}
-#     run: |
-#       echo "BEGIN Run buildScript
-#       set -x -v -e
-#       chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
-#       ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
-#       echo "END   Run buildScript
-#
+ 
+    - name: Run buildScript
+      env:
+        msystem: ${{ env.compilerEnv }}
+        EXPORT_FILE_NAME: ${{ env.exportFileName }}
+      run: |
+        echo "BEGIN Run buildScript
+        set -x -v -e
+        chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
+        ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
+        echo "END   Run buildScript
+ 
 #   - name: For Export Upload Artifact of ${{ env.exportFileName }}.zip
 #     uses: actions/upload-artifact@v7
 #     with:

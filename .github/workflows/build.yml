@@ -12,29 +12,6 @@ permissions:
 
 jobs:
 
-  setup:
-    runs-on: windows-2025-vs2026
-    steps:
-    - name: Pre-build check
-      id: build_check
-      shell: bash
-      run: |
-        echo "BEGIN Pre-build check"
-        set -x -v -e
-        echo "Preparing environment..."
-
-        export IS_SKIPTAG="notset"
-        export IS_SKIPTAG="${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'SKIP') && 'true' || 'false' }}"
-        if [ "${IS_SKIPTAG}" == "" ]; then export IS_SKIPTAG="notset" ; fi
-        echo  "IS_SKIPTAG=${IS_SKIPTAG}" >> ${GITHUB_OUTPUT}
-
-        echo  "IS_SKIPTAG: ${IS_SKIPTAG}"
-
-        echo "END   Pre-build check"
-
-    outputs:
-      IS_SKIPTAG: ${{ steps.build_check.outputs.IS_SKIPTAG }}
-
   build:
     name: >-
       matid ${{ matrix.matid }}
@@ -173,7 +150,6 @@ jobs:
 
     - name: Modify buildScript
       env:
-        # BUILDSCRIPT: ${{ env.buildScript }} # can not be the same case insenstive name
         msystem: ${{ env.compilerEnv }}
       run: |
         echo "BEGIN Modify buildScript"
@@ -219,10 +195,10 @@ jobs:
       run: |
         echo "BEGIN Run buildScript
         set -x -v -e
-        export EXPORT_FILE_NAME="${exportFileName}"
-        echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         export BUILDSCRIPT="${buildScript}"
         echo  "BUILDSCRIPT: ${BUILDSCRIPT}"
+        export EXPORT_FILE_NAME="${exportFileName}"
+        echo  "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
         chmod u+x ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         echo "END   Run buildScript

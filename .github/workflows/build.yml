@@ -105,7 +105,7 @@ jobs:
         echo "mingw_env: ${mingw_env}"
  
         export MINGW_PACKAGE_PREFIX="notset"
-        export MINGW_PACKAGE_PREFIX="mingw-w64-${mingw_env}"; fi
+        if [ "${mingw_env}" != "notset" ]; then export MINGW_PACKAGE_PREFIX="mingw-w64-${mingw_env}"; fi
         echo "MINGW_PACKAGE_PREFIX=${MINGW_PACKAGE_PREFIX}" >> ${GITHUB_ENV}
  
         echo "MINGW_PACKAGE_PREFIX: ${MINGW_PACKAGE_PREFIX}"

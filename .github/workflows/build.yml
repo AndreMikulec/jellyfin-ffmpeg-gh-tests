@@ -43,11 +43,11 @@ jobs:
           GithubActionsIgnoreFail: false
           buildScript: 'msys2/build.sh'
         # ref: jellyfin-ffmpeg specific tag, branch, or (full)SHA passed to "Checkout Jellyfin FFmpeg Code"
-        # (This is limited usefulness in producing old versions of jellyfin-ffmpeg.)
-        # The branch, tag or SHA to checkout. When checking out the repository that
-        # triggered a workflow, this defaults to the reference or SHA for that event.
-        # Otherwise, uses the default branch.
-        # https://github.com/actions/checkout/tree/9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        #      (This is limited usefulness in producing old versions of jellyfin-ffmpeg.)
+        #      The branch, tag or SHA to checkout. When checking out the repository that
+        #      triggered a workflow, this defaults to the reference or SHA for that event.
+        #      Otherwise, uses the default branch.
+        #      https://github.com/actions/checkout/tree/9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
 
     defaults:
       run:
@@ -145,7 +145,7 @@ jobs:
         repository: 'jellyfin/jellyfin-ffmpeg'
         # Relative path under $GITHUB_WORKSPACE to place the repository
         # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
-        ref: ${{ env.ref == 'notset' && '' || env.ref }}
+        ref: ${{ env.ref != 'notset' && env.ref || '' }}
         path: JLFNFFMPEGSRC
 
     # texinfo - is for creating documentation

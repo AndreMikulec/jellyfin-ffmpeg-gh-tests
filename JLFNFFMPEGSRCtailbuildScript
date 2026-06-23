@@ -23,7 +23,7 @@ echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 export      PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
 if [ ! -d "${PREFIX}" ];     then mkdir -p     "${PREFIX}"; fi
 if [ ! -d "${PREFIX}/doc" ]; then mkdir -p     "${PREFIX}/doc"; fi
-cp -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/doc/.  "${PREFIX}/doc"
+cp -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/doc/.  "${PREFIX}/doc/"
 
 if [ -d "${PREFIX}" ]
 then

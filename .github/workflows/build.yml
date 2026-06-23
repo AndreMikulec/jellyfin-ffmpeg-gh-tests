@@ -213,6 +213,7 @@ jobs:
         # next three lines are only for testing
         mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
         mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # resume test or non-test
         cat "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         # build the binaries
         chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
@@ -232,7 +233,7 @@ jobs:
       with:
         body: "## Shared Release ${{ env.PKG_VER }}  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
         omitBodyDuringUpdate: true
-        tag: ${{ env.ref_name }} 
+        tag: ${{ env.ref_name }} # just look at the Artifact name to find the version. Next, push a new tag vVERSION, creating the Release
         allowUpdates: true
         replacesArtifacts: true
         artifacts: |

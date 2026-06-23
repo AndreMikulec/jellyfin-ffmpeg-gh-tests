@@ -9,10 +9,11 @@ arch="x86_64"
 TARGET="win64-clang"
 VARIANT="gpl"
 
+
+
+
 # make install
 # make install-html
-
-cp -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/doc/.
 
 echo "PKG_VER: ${PKG_VER}"
 if [ "${PKG_VER}" == "" ]; then PKG_VER="0.0.0"; fi
@@ -35,7 +36,7 @@ echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 export      PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"
 if [ ! -d "${PREFIX}" ];     then mkdir -p     "${PREFIX}"; fi
 if [ ! -d "${PREFIX}/doc" ]; then mkdir -p     "${PREFIX}/doc"; fi
-cp -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/doc/.  "${PREFIX}/doc"
+cp -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/doc/.  "${PREFIX}/doc/"
 
 if [ -d "${PREFIX}" ]
 then

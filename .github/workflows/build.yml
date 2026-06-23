@@ -116,14 +116,13 @@ jobs:
         
         echo "ref_name: ${ref_name}"
 
-        export exportFileName="jellyfin-ffmpeg-shared-${compilerEnv}"
+        export exportFileName="jellyfin-ffmpeg-shared-$(echo "${compilerEnv}" |sed 's/[A-Z]/\L&/g')"
         if [ "${exportFileName}" == "" ]; then export exportFileName="notset"; fi
         echo "exportFileName=${exportFileName}" >> ${GITHUB_ENV}
 
         echo "exportFileName: ${exportFileName}"
 
         echo "END   General Shell Environment Variables made using Bash"
-
 
     - name: Checkout This Code
       uses: actions/checkout@v7
@@ -136,6 +135,8 @@ jobs:
         # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
         path: JLFNFFMPEGSRC
 
+    # texinfo - is for creating documentation
+    # zip is for the build, and for MY zipping
     - name: Setup for MSYS2
       uses: msys2/setup-msys2@v2
       with:
@@ -144,13 +145,14 @@ jobs:
         msystem: ${{ env.compilerEnv }}
         install: >-
           zip
-#         git
-#         curl
-#         wget
-#         ${{ env.MINGW_PACKAGE_PREFIX }}-toolchain
-#         quilt
-#         diffstat
-#         ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
+          git
+          curl
+          wget
+          ${{ env.MINGW_PACKAGE_PREFIX }}-toolchain
+          quilt
+          diffstat
+          ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
+          ${{ env.MINGW_PACKAGE_PREFIX }}-texinfo
 
     - name: Modify buildScript
       env:
@@ -178,7 +180,9 @@ jobs:
           sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # modify in place - the configure parameters of the head
           sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
-          echo "New buildScript head after adding --enabled-shared"
+          # modify in place - delete the line (UNTESTED)
+          # sed -i 's/--disable-doc/d'                                                     ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+          echo "New buildScript head after changes"
           cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # rename the original
           pushd $(dirname ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT})
@@ -210,8 +214,11 @@ jobs:
         mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
         mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         cat "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # build the binaries
         chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # build the help (UNTESTED)
+        
         echo "END   Run Modify buildScript"
 
     - name: For Export Upload Artifact

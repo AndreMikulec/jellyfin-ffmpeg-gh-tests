@@ -223,9 +223,9 @@ jobs:
         echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
         export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
         echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-        # next three lines are only for testing
-        mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
-        mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        # next two lines are only for testing
+        # mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
+        # mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         # resume test or non-test
         cat "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         # build the binaries

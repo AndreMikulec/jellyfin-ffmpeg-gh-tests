@@ -1,6 +1,7 @@
 
-# make install
-# make install-html
+# sometimes in testing, these two lines are commented out
+make install
+make install-html
 
 echo "PKG_VER: ${PKG_VER}"
 if [ "${PKG_VER}" == "" ]; then PKG_VER="0.0.0"; fi

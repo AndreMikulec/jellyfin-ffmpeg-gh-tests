@@ -11,7 +11,7 @@ VARIANT="gpl"
 
 
 
-
+# sometimes in testing, these two lines are commented out
 # make install
 # make install-html
 

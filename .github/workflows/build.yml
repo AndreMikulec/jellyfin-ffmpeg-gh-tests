@@ -181,7 +181,7 @@ jobs:
           # modify in place - the configure parameters of the head
           sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # modify in place - delete the line (UNTESTED)
-          # sed -i 's/--disable-doc/d'                                                     ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+          sed -i 's/--disable-doc/d'                                                     ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           echo "New buildScript head after changes"
           cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # rename the original
@@ -217,8 +217,6 @@ jobs:
         # build the binaries
         chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
-        # build the help (UNTESTED)
-        
         echo "END   Run Modify buildScript"
 
     - name: For Export Upload Artifact

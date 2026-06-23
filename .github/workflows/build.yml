@@ -145,7 +145,7 @@ jobs:
         repository: 'jellyfin/jellyfin-ffmpeg'
         # Relative path under $GITHUB_WORKSPACE to place the repository
         # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
-        ref: '${{ env.ref == 'notset' && '' || env.ref }}'
+        ref: ${{ env.ref == 'notset' && '' || env.ref }}
         path: JLFNFFMPEGSRC
 
     # texinfo - is for creating documentation

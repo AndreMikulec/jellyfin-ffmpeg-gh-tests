@@ -136,7 +136,7 @@ jobs:
         path: JLFNFFMPEGSRC
 
     # texinfo - is for creating documentation
-    # zip is for the build, and for MY zipping
+    # zip is for the build(or the jellyfin-ffmpeg author), and for MY zipping
     - name: Setup for MSYS2
       uses: msys2/setup-msys2@v2
       with:
@@ -181,7 +181,7 @@ jobs:
           # modify in place - the configure parameters of the head
           sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # modify in place - delete the line (UNTESTED)
-          sed -i 's/--disable-doc/d'                                                     ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+          sed -i '/--disable-doc/d'                                                      ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           echo "New buildScript head after changes"
           cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # rename the original

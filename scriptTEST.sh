@@ -12,7 +12,7 @@ VARIANT="gpl"
 
 
 # sometimes in testing, this line is commented out
-# make install
+make install
 
 echo "PKG_VER: ${PKG_VER}"
 if [ "${PKG_VER}" == "" ]; then PKG_VER="0.0.0"; fi
@@ -49,7 +49,6 @@ then
     set -x -v -e
     # generate FFmpeg documentation
     ./configure --cc=${cc} --cxx=${cxx}
-    # make install-doc
     make install-doc
   popd # from ${GITHUB_WORKSPACE}/PUREFFMPEGSRC
   cp -R       ${GITHUB_WORKSPACE}/PUREFFMPEGSRC/doc/. "${PREFIX}/doc/"

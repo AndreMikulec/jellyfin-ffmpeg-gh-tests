@@ -1,7 +1,6 @@
 
-# sometimes in testing, these two lines are commented out
-make install
-make install-html
+# sometimes in testing, this line is commented out
+# make install
 
 echo "PKG_VER: ${PKG_VER}"
 if [ "${PKG_VER}" == "" ]; then PKG_VER="0.0.0"; fi
@@ -25,6 +24,21 @@ export      PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-
 if [ ! -d "${PREFIX}" ];     then mkdir -p     "${PREFIX}"; fi
 if [ ! -d "${PREFIX}/doc" ]; then mkdir -p     "${PREFIX}/doc"; fi
 cp -R ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/doc/.  "${PREFIX}/doc/"
+
+if [ $(which doxygen) ]
+then
+  pushd ${GITHUB_WORKSPACE}/PUREFFMPEGSRC
+    # https://linux.die.net/man/1/doxygen
+    # update an old configuration file
+    doxygen -u doc/Doxyfile
+    # generate documentation
+    doxygen    doc/Doxyfile
+    # generate FFmpeg documentation
+    ./configure --cc=${cc} --cxx=${cxx}
+    make install-doc
+  popd # from ${GITHUB_WORKSPACE}/PUREFFMPEGSRC
+  cp -R       ${GITHUB_WORKSPACE}/PUREFFMPEGSRC/doc/.    "${PREFIX}/doc/"
+fi
 
 if [ -d "${PREFIX}" ]
 then

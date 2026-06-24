@@ -98,6 +98,20 @@ jobs:
 
         echo "mingw_env: ${mingw_env}"
 
+        export cc="notset"
+        if [ "${compilerEnv}" == "CLANG64" ]; then export cc="clang"; fi
+        if [ "${compilerEnv}" == "notset" ];  then export cc="notset"; fi
+        echo "cc=${cc}" >> ${GITHUB_ENV}
+
+        echo "cc: ${cc}"
+
+        export cxx="notset"
+        if [ "${compilerEnv}" == "CLANG64" ]; then export cxx="clang++"; fi
+        if [ "${compilerEnv}" == "notset" ];  then export cxx="notset"; fi
+        echo "cxx=${cxx}" >> ${GITHUB_ENV}
+
+        echo "cxx: ${cxx}"
+
         export MINGW_PACKAGE_PREFIX="notset"
         if [ "${mingw_env}" != "notset" ]; then export MINGW_PACKAGE_PREFIX="mingw-w64-${mingw_env}"; fi
         echo "MINGW_PACKAGE_PREFIX=${MINGW_PACKAGE_PREFIX}" >> ${GITHUB_ENV}
@@ -134,6 +148,12 @@ jobs:
 
         echo "exportFileName: ${exportFileName}"
 
+        export VERSION=$(cat VERSION)
+        if [ "${VERSION}" == "" ]; then export VERSION="notset"; fi
+        echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
+
+        echo "VERSION: ${VERSION}"
+
         echo "END   General Shell Environment Variables made using Bash"
 
     - name: Checkout This Code
@@ -148,7 +168,18 @@ jobs:
         ref: ${{ env.ref != 'notset' && env.ref || '' }}
         path: JLFNFFMPEGSRC
 
+    - name: Checkout JFFmpeg Code
+      uses: actions/checkout@v7
+      with:
+        repository: 'ffmpeg/ffmpeg'
+        # Relative path under $GITHUB_WORKSPACE to place the repository
+        # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
+        # NOTE - this will break if the tag name changes to start with 'v' from 'n'
+        ref: 'n${VERSION}'
+        path: PUREFFMPEGSRC
+
     # texinfo - is for creating documentation
+    # doxygen - is for creating API calls documentation
     # zip is for the build(or the jellyfin-ffmpeg author), and for MY zipping
     - name: Setup for MSYS2
       uses: msys2/setup-msys2@v2
@@ -166,6 +197,7 @@ jobs:
           diffstat
           ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
           ${{ env.MINGW_PACKAGE_PREFIX }}-texinfo
+          ${{ env.MINGW_PACKAGE_PREFIX }}-doxygen
 
     - name: Modify buildScript
       env:
@@ -193,8 +225,8 @@ jobs:
           sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # modify in place - the configure parameters of the head
           sed -i 's/--extra-version=Jellyfin/--extra-version=Jellyfin --enable-shared/g' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
-          # modify in place - delete the line (UNTESTED)
-          sed -i '/--disable-doc/d'                                                      ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+          # modify in place - delete the line (THOSE CUSTOMIZATIONS HAVE NO DOC SUPPORT)
+          # sed -i '/--disable-doc/d'                                                      ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           echo "New buildScript head after changes"
           cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # rename the original
@@ -224,8 +256,8 @@ jobs:
         export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
         echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
         # next two lines are only for testing
-        # mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
-        # mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
+        mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         # resume test or non-test
         cat "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         # build the binaries

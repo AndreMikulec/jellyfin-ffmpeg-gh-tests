@@ -49,12 +49,10 @@ then
     set -x -v -e
     # generate FFmpeg documentation
     ./configure --cc=${cc} --cxx=${cxx}
-    which make
-    # WTF
-    # JLFNFFMPEGSRC/msys2/build.sh: line 50: make: command not found
-make install-doc
+    # make install-doc
+    make install-doc
   popd # from ${GITHUB_WORKSPACE}/PUREFFMPEGSRC
-  cp -R       ${GITHUB_WORKSPACE}/PUREFFMPEGSRC/doc/.    "${PREFIX}/doc/"
+  cp -R       ${GITHUB_WORKSPACE}/PUREFFMPEGSRC/doc/. "${PREFIX}/doc/"
 fi
 
 if [ -d "${PREFIX}" ]

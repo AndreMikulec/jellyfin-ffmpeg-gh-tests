@@ -162,6 +162,15 @@ jobs:
         ref: ${{ env.ref != 'notset' && env.ref || '' }}
         path: JLFNFFMPEGSRC
 
+    - name: Look at Jellyfin FFmpeg Code
+      env:
+        msystem: ${{ env.compilerEnv }}
+      run: |
+        echo "BEGIN Look at Jellyfin FFmpeg Code"
+        set -x -v -e
+        ls -alrt -R JLFNFFMPEGSRC
+        echo "END   Look at Jellyfin FFmpeg Code"
+
     # texinfo - is for creating documentation
     # doxygen - is for creating API calls documentation
     # zip is for the build(or the jellyfin-ffmpeg author), and for MY zipping
@@ -208,6 +217,15 @@ jobs:
         ref: 'n${{ env.VERSION }}'
         path: PUREFFMPEGSRC
 
+    - name: Look at FFmpeg Code
+      env:
+        msystem: ${{ env.compilerEnv }}
+      run: |
+        echo "BEGIN Look at FFmpeg Code"
+        set -x -v -e
+        ls -alrt -R PUREFFMPEGSRC
+        echo "END   Look at FFmpeg Code"
+
     - name: Modify buildScript
       env:
         msystem: ${{ env.compilerEnv }}
@@ -221,15 +239,14 @@ jobs:
           echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
           export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
           echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-          ls -alrt JLFNFFMPEGSRC
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCtailbuildScript
+          cat -n ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCtailbuildScript
           # number of the line that starts with PKG_NAME
           export PKG_NAME_LINE_NO=$(sed -n '/^PKG_NAME/=' ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT})
           echo "PKG_NAME_LINE_NO: ${PKG_NAME_LINE_NO}"
           # the line that starts with PKG_NAME
           head ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT} -n $((${PKG_NAME_LINE_NO}-1)) > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           echo "head of the buildScript"
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+          cat -n ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # modify in place, the args of the bash script
           sed -i 's/set -xe/set -x -v -e/g'                                              ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # modify in place - the configure parameters of the head
@@ -237,7 +254,7 @@ jobs:
           # modify in place - delete the line (THOSE CUSTOMIZATIONS HAVE NO DOC SUPPORT)
           # sed -i '/--disable-doc/d'                                                      ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           echo "New buildScript head after changes"
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
+          cat -n ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript
           # rename the original
           pushd $(dirname ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT})
             mv ../${BUILDSCRIPT} ../${BUILDSCRIPT}.original
@@ -245,7 +262,7 @@ jobs:
           # reassemble the head and the tail
           cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRCheadbuildScript JLFNFFMPEGSRCtailbuildScript > ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
           echo "Final new buildscript"
-          cat ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
+          cat -n ${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}
         else
           echo A directory called \""${JLFNFFMPEGSRC}"\" was not found.  So, exiting ... ||  exit 1
         fi
@@ -268,7 +285,7 @@ jobs:
         mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
         mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         # resume test or non-test
-        cat "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
+        cat -n "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         # build the binaries
         chmod u+x "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"
         "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"

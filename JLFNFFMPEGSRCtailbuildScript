@@ -32,10 +32,15 @@ then
     # update an old configuration file
     doxygen -u doc/Doxyfile
     # generate documentation
+    set +x +v +e
     doxygen    doc/Doxyfile
+    set -x -v -e
     # generate FFmpeg documentation
     ./configure --cc=${cc} --cxx=${cxx}
-    make install-doc
+    which make
+    # WTF
+    # JLFNFFMPEGSRC/msys2/build.sh: line 50: make: command not found
+make install-doc
   popd # from ${GITHUB_WORKSPACE}/PUREFFMPEGSRC
   cp -R       ${GITHUB_WORKSPACE}/PUREFFMPEGSRC/doc/.    "${PREFIX}/doc/"
 fi

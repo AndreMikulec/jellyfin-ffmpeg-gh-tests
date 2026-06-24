@@ -281,6 +281,10 @@ jobs:
         echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
         export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
         echo  "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+        # make - because 'jellyfin/jellyfin-ffmpeg' calls .sh and then 'make' 
+        #  from Git Bash, which is included with Git for Windows.,
+        #    instead of the MSYS2 compilerEnv environment
+        ln -s $(which mingw32-make) $(dirname $(which mingw32-make))/make
         # next two lines are only for testing
         mv  "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
         mv  "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"

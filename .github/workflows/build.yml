@@ -148,12 +148,6 @@ jobs:
 
         echo "exportFileName: ${exportFileName}"
 
-        export VERSION=$(cat VERSION)
-        if [ "${VERSION}" == "" ]; then export VERSION="notset"; fi
-        echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
-
-        echo "VERSION: ${VERSION}"
-
         echo "END   General Shell Environment Variables made using Bash"
 
     - name: Checkout This Code
@@ -167,16 +161,6 @@ jobs:
         # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
         ref: ${{ env.ref != 'notset' && env.ref || '' }}
         path: JLFNFFMPEGSRC
-
-    - name: Checkout JFFmpeg Code
-      uses: actions/checkout@v7
-      with:
-        repository: 'ffmpeg/ffmpeg'
-        # Relative path under $GITHUB_WORKSPACE to place the repository
-        # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
-        # NOTE - this will break if the tag name changes to start with 'v' from 'n'
-        ref: 'n${VERSION}'
-        path: PUREFFMPEGSRC
 
     # texinfo - is for creating documentation
     # doxygen - is for creating API calls documentation
@@ -198,6 +182,31 @@ jobs:
           ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
           ${{ env.MINGW_PACKAGE_PREFIX }}-texinfo
           ${{ env.MINGW_PACKAGE_PREFIX }}-doxygen
+
+    - name: Jellyfin FFmpeg Code VERSION
+      env:
+        msystem: ${{ env.compilerEnv }}
+      run: |
+        echo "BEGIN Jellyfin FFmpeg Code VERSION"
+        set -x -v -e
+
+        export VERSION=$(cat JLFNFFMPEGSRC\VERSION)
+        if [ "${VERSION}" == "" ]; then export VERSION="notset"; fi
+        echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
+
+        echo "VERSION: ${VERSION}"
+
+        echo "END   Jellyfin FFmpeg Code VERSION"
+
+    - name: Checkout JFFmpeg Code
+      uses: actions/checkout@v7
+      with:
+        repository: 'ffmpeg/ffmpeg'
+        # Relative path under $GITHUB_WORKSPACE to place the repository
+        # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
+        # NOTE - this will break if the tag name changes to start with 'v' from 'n'
+        ref: 'n${VERSION}'
+        path: PUREFFMPEGSRC
 
     - name: Modify buildScript
       env:

@@ -268,9 +268,10 @@ jobs:
         fi
         echo "END   Modify buildScript"
 
+    # Must be ran through  Git for Windows (if it ever makes it to doxygen then will die there)
     - name: Run buildScript
-      env:
-        msystem: ${{ env.compilerEnv }}
+      # env:
+      #   msystem: ${{ env.compilerEnv }}
       run: |
         echo "BEGIN Run buildScript"
         set -x -v -e
@@ -284,7 +285,7 @@ jobs:
         # make - because 'jellyfin/jellyfin-ffmpeg' calls .sh and then 'make' 
         #  from Git Bash, which is included with Git for Windows.,
         #    instead of the MSYS2 compilerEnv environment
-        ln -s $(which mingw32-make) $(dirname $(which mingw32-make))/make
+        # ln -s $(which mingw32-make) $(dirname $(which mingw32-make))/make
         # next two lines are only for testing
         # mv "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}" "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}.old"
         # mv "${GITHUB_WORKSPACE}/scriptTEST.sh"                "${GITHUB_WORKSPACE}/JLFNFFMPEGSRC/${BUILDSCRIPT}"

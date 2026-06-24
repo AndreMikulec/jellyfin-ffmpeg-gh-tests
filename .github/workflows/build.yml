@@ -205,7 +205,7 @@ jobs:
         # Relative path under $GITHUB_WORKSPACE to place the repository
         # Jellyfin(JLFN) FFmpeg(FFMPEG) source(SRC)
         # NOTE - this will break if the tag name changes to start with 'v' from 'n'
-        ref: 'n${VERSION}'
+        ref: 'n${{ env.VERSION }}'
         path: PUREFFMPEGSRC
 
     - name: Modify buildScript

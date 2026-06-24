@@ -11,8 +11,17 @@ VARIANT="gpl"
 
 
 
+echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
+echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+
+echo "DIRECTORIES and FILES after MAKE"
+ls -alrt -R ${GITHUB_WORKSPACE}
 # sometimes in testing, this line is commented out
 make install
+
+echo "DIRECTORIES and FILES after MAKE INSTALL"
+ls -alrt -R ${GITHUB_WORKSPACE}
 
 echo "PKG_VER: ${PKG_VER}"
 if [ "${PKG_VER}" == "" ]; then PKG_VER="0.0.0"; fi
@@ -26,10 +35,6 @@ export EXPORT_FILE_NAME="${EXPORT_FILE_NAME}-${PKG_VER}"
 echo "EXPORT_FILE_NAME=${EXPORT_FILE_NAME}" >> ${GITHUB_ENV}
 
 echo "EXPORT_FILE_NAME: ${EXPORT_FILE_NAME}"
-
-echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-export GITHUB_WORKSPACE="$(cygpath ${GITHUB_WORKSPACE})"
-echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
 
 # converts the word of the variable to lowercase
 export      PREFIX="/$(echo "${MSYSTEM}" |sed 's/[A-Z]/\L&/g')/ffbuild/jellyfin-ffmpeg"

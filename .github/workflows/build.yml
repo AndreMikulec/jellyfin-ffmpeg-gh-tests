@@ -162,15 +162,6 @@ jobs:
         ref: ${{ env.ref != 'notset' && env.ref || '' }}
         path: JLFNFFMPEGSRC
 
-    - name: Look at Jellyfin FFmpeg Code
-      env:
-        msystem: ${{ env.compilerEnv }}
-      run: |
-        echo "BEGIN Look at Jellyfin FFmpeg Code"
-        set -x -v -e
-        ls -alrt -R JLFNFFMPEGSRC
-        echo "END   Look at Jellyfin FFmpeg Code"
-
     # texinfo - is for creating documentation
     # doxygen - is for creating API calls documentation
     # zip is for the build(or the jellyfin-ffmpeg author), and for MY zipping
@@ -191,6 +182,15 @@ jobs:
           ${{ env.MINGW_PACKAGE_PREFIX }}-nasm
           ${{ env.MINGW_PACKAGE_PREFIX }}-texinfo
           ${{ env.MINGW_PACKAGE_PREFIX }}-doxygen
+
+    - name: Look at Jellyfin FFmpeg Code
+      env:
+        msystem: ${{ env.compilerEnv }}
+      run: |
+        echo "BEGIN Look at Jellyfin FFmpeg Code"
+        set -x -v -e
+        ls -alrt -R JLFNFFMPEGSRC
+        echo "END   Look at Jellyfin FFmpeg Code"
 
     - name: Jellyfin FFmpeg Code VERSION
       env:

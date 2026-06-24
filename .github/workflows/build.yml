@@ -190,7 +190,7 @@ jobs:
         echo "BEGIN Jellyfin FFmpeg Code VERSION"
         set -x -v -e
 
-        export VERSION=$(cat JLFNFFMPEGSRC\VERSION)
+        export VERSION=$(cat JLFNFFMPEGSRC/VERSION)
         if [ "${VERSION}" == "" ]; then export VERSION="notset"; fi
         echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
 
@@ -287,9 +287,9 @@ jobs:
       with:
         body: "## Shared Release ${{ env.PKG_VER }}  \nBuilt at the UTC date-time of ${{ env.TODAYSDATETIME }}.  "
         omitBodyDuringUpdate: true
-        tag: ${{ env.ref_name }} # just look at the Artifact name to find the version. Next, push a new tag vVERSION, creating the Release
-        allowUpdates: true
-        replacesArtifacts: true
+        tag: ${{ env.ref_name }} # tag - Just look at the Artifact name to find the version. 
+        allowUpdates: true       #   Or look at the contents of the file JLFNFFMPEGSRC/VERSION.
+        replacesArtifacts: true  # Next, push a new tag vVERSION, creating the Release
         artifacts: |
           ${{ env.EXPORT_FILE_NAME }}.zip
         token: ${{ secrets.GITHUB_TOKEN }}
